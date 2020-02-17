@@ -1,9 +1,18 @@
+#include <LiquidCrystal.h>
+
 // Config
 const unsigned long DELAY_LONG_PRESS = 500;
 const unsigned long DELAY_DECODE = 500;
 const int BUTTON = 2;
 const int LED_SHORT = 3;
 const int LED_LONG = 4;
+
+const int LCD_RS = 5;
+const int LCD_E = 6;
+const int LCD_D4 = 7;
+const int LCD_D5 = 8;
+const int LCD_D6 = 9;
+const int LCD_D7 = 10;
 
 typedef enum {
   dot,
@@ -64,6 +73,8 @@ MorseChar morseAlphabet[MORSE_CHARS_COUNT] = {
   {'0', 22222}
 };
 
+LiquidCrystal lcd(LCD_RS, LCD_E, LCD_D4, LCD_D5, LCD_D6, LCD_D7);
+
 int hashForSequence(Code *sequence, int length) {
   int hash = 0;
   int multiplier = 1;
@@ -113,6 +124,9 @@ void setup() {
   pinMode(LED_SHORT, OUTPUT);
   pinMode(LED_LONG, OUTPUT);
   Serial.begin(9600);
+  lcd.begin(16, 2);
+  lcd.cursor();
+  lcd.blink();
 }
 
 void loop() {
@@ -150,6 +164,7 @@ void loop() {
     char decoded = characterForSequence(codes, codeIndex);
     Serial.print("Decoded: ");
     Serial.println(decoded);
+    lcd.write(decoded);
     codeIndex = 0;
     delay(200);
     digitalWrite(LED_SHORT, LOW);
